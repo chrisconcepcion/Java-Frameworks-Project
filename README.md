@@ -4,13 +4,50 @@
 ## D287 – JAVA FRAMEWORKS
 
 C.  Customize the HTML user interface for your customer’s application. The user interface should include the shop name, the product names, and the names of the parts.
-mainscreen.html:
+
+Changes to mainscreen.html:
     line 14: Updated title to "Chris's Computers"
     line 19: Updated h1 to "Chris's Computers"
     line 24: Updated h2 to "System Components"
     line 53: Updated h2 to "Computers"
 
 D.  Add an “About” page to the application to describe your chosen customer’s company to web viewers and include navigation to and from the “About” page and the main screen.
+
+Added src/main/resources/templates/about.html
+Added src/main/resources/static/css/styles.css
+Changes to mainscreen.html:
+    line 13: Added style sheet to page: <link rel="stylesheet" th:href="@{/css/styles.css}">
+    line 18: added nav bar
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Chris's Computers</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About Us</a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+    line 38: changed original h1 to <h1 class="text-align-center">New Inventory!</h1>
+    line 112: added footer
+        <footer class="bg-primary">
+            <p class="mb-0">© 2025 Chris's Computers. All rights reserved.</p>
+        </footer>
+
+Changes to src/main/java/com/example/demo/controllers/MainScreenControllerr.java:
+    line 56: added route/mapping for about us
+        @GetMapping("/about")
+            public String about() {
+            return "about.html";
+        }
 
 
 E.  Add a sample inventory appropriate for your chosen store to the application. You should have five parts and five products in your sample inventory and should not overwrite existing data in the database.
