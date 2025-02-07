@@ -90,6 +90,14 @@ public class Product implements Serializable {
     public String toString(){
         return this.name;
     }
+
+    // Consumed by AddInHousePartController when adding a part.
+    // When a part already exists in an order, we add a multi-pack variant.
+    // This method updates the name of the product to include (multi-pack)".
+    public void multiPackProduct() {
+        this.setName(this.getName() + " (multi-pack)");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

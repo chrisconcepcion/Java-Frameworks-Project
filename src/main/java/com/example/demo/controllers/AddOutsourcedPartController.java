@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-
+import java.util.HashSet;
+import java.util.Set;
 /**
  *
  *
@@ -29,7 +30,8 @@ import javax.validation.Valid;
 public class AddOutsourcedPartController {
     @Autowired
     private ApplicationContext context;
-
+    private boolean partAlreadyExists = false;
+    private Set<Part> listParts = new HashSet<>();
     @GetMapping("/showFormAddOutPart")
     public String showFormAddOutsourcedPart(Model theModel){
         Part part=new OutsourcedPart();
@@ -47,6 +49,23 @@ public class AddOutsourcedPartController {
         OutsourcedPartService repo=context.getBean(OutsourcedPartServiceImpl.class);
         OutsourcedPart op=repo.findById((int)part.getId());
         if(op!=null)part.setProducts(op.getProducts());
+            // Iterate through parts to see if our new part matches one already
+            // present.
+            for (Part thing : listParts) {
+                if (thing.getName().equals(part.getName())) {
+                    partAlreadyExists = true;
+                } else {
+                    partAlreadyExists = false;
+                }
+            }
+
+            // If part already exists create a multi-pack version.
+            if (partAlreadyExists == true) {
+                part.multiPackPart();
+                listParts.add(part);
+            } else {
+                listParts.add(part);
+            }
             repo.save(part);
         return "confirmationaddpart";}
     }

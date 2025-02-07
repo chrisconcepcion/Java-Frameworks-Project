@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.HashSet;
+import java.util.Set;
 /**
  *
  *
@@ -31,6 +32,8 @@ public class AddProductController {
     private List<Part> theParts;
     private static Product product1;
     private Product product;
+    private Set<Product> listProducts = new HashSet<>();
+    private boolean productAlreadyExists = false;
 
     @GetMapping("/showFormAddProduct")
     public String showFormAddPart(Model theModel) {
@@ -88,6 +91,25 @@ public class AddProductController {
             else{
                 product.setInv(0);
             }
+
+            // Iterate through products to see if our new product matches one already
+            // present.
+            for (Product thing : listProducts) {
+                if (thing.getName().equals(product.getName())) {
+                    productAlreadyExists = true;
+                } else {
+                    productAlreadyExists = false;
+                }
+            }
+
+            // If product already exists create a multi-pack version.
+            if (productAlreadyExists == true) {
+                product.multiPackProduct();
+                listProducts.add(product);
+            } else {
+                listProducts.add(product);
+            }
+
             repo.save(product);
             return "confirmationaddproduct";
         }

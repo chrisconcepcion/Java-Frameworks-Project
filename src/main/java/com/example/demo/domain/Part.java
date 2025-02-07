@@ -50,6 +50,8 @@ public abstract class Part implements Serializable {
         this.inv = inv;
     }
 
+    public void multiPackPart() { this.setName(this.getName() + " (multi-pack)"); }
+
     public long getId() {
         return id;
     }

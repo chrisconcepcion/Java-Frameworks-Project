@@ -49,11 +49,188 @@ Changes to src/main/java/com/example/demo/controllers/MainScreenControllerr.java
             return "about.html";
         }
 
-
 E.  Add a sample inventory appropriate for your chosen store to the application. You should have five parts and five products in your sample inventory and should not overwrite existing data in the database.
-
-
 Note: Make sure the sample inventory is added only when both the part and product lists are empty. When adding the sample inventory appropriate for the store, the inventory is stored in a set so duplicate items cannot be added to your products. When duplicate items are added, make a “multi-pack” part.
+
+Changes to com/example/demo/bootstrap/BootStrapData.java
+    line 16: added import java.util.*; for access to hashset.
+
+     line 69: added seed products and parts
+         // Setup hashset for sample products and sample parts.
+        Set<Product> seedProducts = new HashSet<Product>();
+        Set<Part> seedParts = new HashSet<>();
+
+        // Set seed products.
+        Product superStream = new Product(1, "Super Streaming Computer", 5999.00, 5);
+        Product topNotch = new Product(2, "Top Notch FPS Gamer Computer", 4999.00, 5);
+        Product basicStreamer = new Product(3, "Basic Streamer Computer", 999.00, 5);
+        Product basicGamer = new Product(4, "Basic Gaming Computer", 499.00, 5);
+        Product basicDad = new Product(5, "Basic Dad Computer", 399.00, 5);
+
+        // Adds seed products to the database.
+        seedProducts.add(superStream);
+        seedProducts.add(topNotch);
+        seedProducts.add(basicStreamer);
+        seedProducts.add(basicGamer);
+        seedProducts.add(basicDad);
+
+        // Create seed parts,
+        InhousePart gpu = new InhousePart();
+        gpu.setId(1);
+        gpu.setName("RTX 5090");
+        gpu.setPrice(2999.99);
+        gpu.setInv(20);
+
+        InhousePart processor = new InhousePart();
+        processor.setId(2);
+        processor.setName("AMD 9800X3D");
+        processor.setPrice(449.99);
+        processor.setInv(20);
+
+
+        InhousePart motherboard = new InhousePart();
+        motherboard.setId(3);
+        motherboard.setName("Motherboard");
+        motherboard.setPrice(249.99);
+        motherboard.setInv(20);
+
+
+        InhousePart tower = new InhousePart();
+        tower.setId(4);
+        tower.setName("Case");
+        tower.setPrice(49.99);
+        tower.setInv(20);
+
+
+        InhousePart ram = new InhousePart();
+        ram.setId(5);
+        ram.setName("DDR5 64GB");
+        ram.setPrice(199.99);
+        ram.setInv(20);
+
+        // Add seed parts to database.
+        seedParts.add(gpu);
+        seedParts.add(processor);
+        seedParts.add(motherboard);
+        seedParts.add(tower);
+        seedParts.add(ram);
+
+        // If we have no parts or products in the database
+        // seed the database.
+        if (partRepository.count() == 0 && productRepository.count() == 0) {
+            for (Product product : seedProducts) {
+                productRepository.save(product);
+            }
+
+            for (Part part : seedParts) {
+                partRepository.save(part);
+            }
+        }
+Changes to src/main/java/com/example/demo/domain/Product.java:
+        line 94: added multiPackProduct method to add multi-pack to product name.  
+            // Consumed by AddInHousePartController when adding a part.
+            // When a part already exists in an order, we add a multi-pack variant.
+            // This method updates the name of the product to include (multi-pack)".
+            public void multiPackProduct() {
+                this.setName(this.getName() + " (multi-pack)");
+            }
+
+Changes to src/main/java/com/example/demo/controllers/AddProductController.java
+    line 19: imported  hashset
+        import java.util.HashSet;
+        import java.util.Set;
+    
+    line 35: Added listProducts hashset
+        private Set<Product> listProducts = new HashSet<>();
+
+    line 36: Added boolean to help manage determine if a product already exists
+        private boolean productAlreadyExists = false;
+
+    line 95: Updated submitForm method to include updating a product to multipack if it already exists.
+        // Iterate through products to see if our new product matches one already
+        // present.
+        for (Product thing : listProducts) {
+            if (thing.getName().equals(product.getName())) {
+                productAlreadyExists = true;
+            } else {
+                productAlreadyExists = false;
+            }
+        }
+
+        // If product already exists create a multi-pack version.
+        if (productAlreadyExists == true) {
+            product.multiPackProduct();
+            listProducts.add(product);
+        } else {
+            listProducts.add(product);
+        }
+
+Changes to src/main/java/com/example/demo/domain/Part.java:
+    line 53: added multiPackProduct method to add multi-pack to part name.
+        public void multiPackPart() { this.setName(this.getName() + " (multi-pack)"); }
+
+Changes to src/main/java/com/example/demo/controllers/AddInhousePartController.java
+    line 20: imported hashset and set
+        import java.util.HashSet;
+        import java.util.Set;
+
+    line 32: Added boolean to help determine if a part already exists
+        private boolean partAlreadyExists = false;
+
+    line 33: Added listParts hashset
+        private Set<Part> listParts = new HashSet<>();
+
+    line 51: Updated submitForm method to include updating a part to multipack if it already exists.
+        // Iterate through parts to see if our new part matches one already
+        // present.
+        for (Part thing : listParts) {
+            if (thing.getName().equals(part.getName())) {
+                partAlreadyExists = true;
+            } else {
+                partAlreadyExists = false;
+            }
+        }
+
+        // If part already exists create a multi-pack version.
+        if (partAlreadyExists == true) {
+            part.multiPackPart();
+            listParts.add(part);
+        } else {
+            listParts.add(part);
+        }
+
+Changes to src/main/java/com/example/demo/controllers/AddOutsourcedPartController.java
+    line 22: imported hashset
+        import java.util.HashSet;
+        import java.util.Set;
+    
+    line 33: Added boolean to help determine if a part already exists
+        private boolean partAlreadyExists = false;
+
+    line 34: Added listParts hashset
+        private Set<Part> listParts = new HashSet<>();
+
+    line 52: Updated submitForm method to include updating a part to multipack if it already exists.
+        // Iterate through parts to see if our new parts matches one already
+        // present.
+        for (Part thing : listParts) {
+            if (thing.getName().equals(part.getName())) {
+                partAlreadyExists = true;
+            } else {
+                partAlreadyExists = false;
+            }
+        }
+
+        // If part already exists create a multi-pack version.
+        if (partAlreadyExists == true) {
+            part.multiPackPart();
+            listParts.add(part);
+        } else {
+            listParts.add(part);
+        }
+
+Changes to static/css/styles.css:
+    line 9: updated footer styling
 
 
 F.  Add a “Buy Now” button to your product list. Your “Buy Now” button must meet each of the following parameters:

@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-
+import java.util.HashSet;
+import java.util.Set;
 /**
  *
  *
@@ -28,7 +29,8 @@ import javax.validation.Valid;
 public class AddInhousePartController{
     @Autowired
     private ApplicationContext context;
-
+    private boolean partAlreadyExists = false;
+    private Set<Part> listParts = new HashSet<>();
     @GetMapping("/showFormAddInPart")
     public String showFormAddInhousePart(Model theModel){
         InhousePart inhousepart=new InhousePart();
@@ -46,6 +48,24 @@ public class AddInhousePartController{
         InhousePartService repo=context.getBean(InhousePartServiceImpl.class);
         InhousePart ip=repo.findById((int)part.getId());
         if(ip!=null)part.setProducts(ip.getProducts());
+            // Iterate through parts to see if our new part matches one already
+            // present.
+            for (Part thing : listParts) {
+                if (thing.getName().equals(part.getName())) {
+                    partAlreadyExists = true;
+                } else {
+                    partAlreadyExists = false;
+                }
+            }
+
+            // If part already exists create a multi-pack version.
+            if (partAlreadyExists == true) {
+                part.multiPackPart();
+                listParts.add(part);
+            } else {
+                listParts.add(part);
+            }
+
             repo.save(part);
 
         return "confirmationaddpart";}
