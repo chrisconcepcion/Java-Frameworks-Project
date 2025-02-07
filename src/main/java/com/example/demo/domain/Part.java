@@ -28,6 +28,10 @@ public abstract class Part implements Serializable {
     double price;
     @Min(value = 0, message = "Inventory value must be positive")
     int inv;
+    @Column(name = "MAX_INV")
+    int max_inv = 1;
+    @Column(name = "MIN_INV")
+    int min_inv = 1;
 
     @ManyToMany
     @JoinTable(name="product_part", joinColumns = @JoinColumn(name="part_id"),
@@ -48,6 +52,23 @@ public abstract class Part implements Serializable {
         this.name = name;
         this.price = price;
         this.inv = inv;
+    }
+
+    public Part(String name, double price, int inv, int max_inv, int min_inv) {
+        this.name = name;
+        this.price = price;
+        this.inv = inv;
+        this.max_inv = max_inv;
+        this.min_inv = min_inv;
+    }
+
+    public Part(long id, String name, double price, int inv, int max_inv, int min_inv) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.inv = inv;
+        this.max_inv = max_inv;
+        this.min_inv = min_inv;
     }
 
     public void multiPackPart() { this.setName(this.getName() + " (multi-pack)"); }
@@ -108,5 +129,22 @@ public abstract class Part implements Serializable {
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
+    }
+
+    public int getMaxInv() { return max_inv; }
+
+    public void setMaxInv(int max_inv) { this.max_inv = max_inv; }
+
+    public int getMinInv() { return min_inv; }
+
+    public void setMinInv(int min_inv) { this.min_inv = min_inv; }
+
+    public void validateInvLimits() {
+        if (this.inv < this.min_inv) {
+            throw new RuntimeException("This value is less than required minimum inventory.");
+        }
+        else if (this.inv > this.max_inv) {
+            throw new RuntimeException("This value is more than required maximum inventory.");
+        }
     }
 }

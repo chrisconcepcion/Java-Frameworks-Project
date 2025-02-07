@@ -267,11 +267,60 @@ Changes to src/main/resources/templates/mainscreen.html:
 
 G.  Modify the parts to track maximum and minimum inventory by doing the following:
 •  Add additional fields to the part entity for maximum and minimum inventory.
-•  Modify the sample inventory to include the maximum and minimum fields.
-•  Add to the InhousePartForm and OutsourcedPartForm forms additional text inputs for the inventory so the user can set the maximum and minimum values.
-•  Rename the file the persistent storage is saved to.
-•  Modify the code to enforce that the inventory is between or at the minimum and maximum value.
+    changes to src/main/java/com/example/demo/domain/Part.java
+        line 31:
+            @Column(name = "MAX_INV")
+            int max_inv = 1;
+            @Column(name = "MIN_INV")
+            int min_inv = 1;
+        line 57:
+            public Part(String name, double price, int inv, int max_inv, int min_inv) {
+                this.name = name;
+                this.price = price;
+                this.inv = inv;
+                this.max_inv = max_inv;
+                this.min_inv = min_inv;
+            }
+    
+            public Part(long id, String name, double price, int inv, int max_inv, int min_inv) {
+                this.id = id;
+                this.name = name;
+                this.price = price;
+                this.inv = inv;
+                this.max_inv = max_inv;
+                this.min_inv = min_inv;
+            }
 
+        Line 130:
+            public int getMaxInv() { return max_inv; }
+
+            public void setMaxInv(int max_inv) { this.max_inv = max_inv; }
+        
+            public int getMinInv() { return min_inv; }
+        
+            public void setMinInv(int min_inv) { this.min_inv = min_inv; }
+
+•  Modify the sample inventory to include the maximum and minimum fields.
+    Changes to src/main/java/com/example/demo/bootstrap/BootStrapData.java at line 93-129
+•  Add to the InhousePartForm and OutsourcedPartForm forms additional text inputs for the inventory so the user can set the maximum and minimum values.
+    Changes lines 16-25 in src/main/resources/templates/InhousePartForm.html to include labels for each field and added min and max inventory fields.
+    Changes lines 16-26 in src/main/resources/templates/OutsourcedPartForm.html to include labels for each field and added min and max inventory fields.
+•  Rename the file the persistent storage is saved to.
+    Commented out old db line 6 and added new line with content: spring.datasource.url=jdbc:h2:file:~/chriscomputers
+•  Modify the code to enforce that the inventory is between or at the minimum and maximum value.
+    Added validation method to src/main/java/com/example/demo/domain/Part.java:
+        line 142:
+            public void validateInvLimits() {
+                if (this.inv < this.min_inv) {
+                    throw new RuntimeException("This value is less than required minimum inventory.");
+                }
+                else if (this.inv > this.max_inv) {
+                    throw new RuntimeException("This value is more than required maximum inventory.");
+                }
+            }
+    updated src/main/java/com/example/demo/service/PartServiceImpl.java line 58 to save method to call validateInvLimits() prior to saving.
+    updated src/main/java/com/example/demo/service/OutsourcedPartServiceImpl.java line 52 to save method to call validateInvLimits() prior to saving.
+    updated src/main/java/com/example/demo/service/InhousePartServiceImpl.java line 54 to save method to call validateInvLimits() prior to saving.
 
 H.  Add validation for between or at the maximum and minimum fields. The validation must include the following:
 •  Display error messages for low inventory when adding and updating parts if the inventory is less than the minimum number of parts.

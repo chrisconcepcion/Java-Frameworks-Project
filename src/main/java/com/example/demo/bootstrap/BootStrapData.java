@@ -90,12 +90,16 @@ public class BootStrapData implements CommandLineRunner {
         gpu.setName("RTX 5090");
         gpu.setPrice(2999.99);
         gpu.setInv(20);
+        gpu.setMaxInv(20);
+        gpu.setMinInv(1);
 
         InhousePart processor = new InhousePart();
         processor.setId(2);
         processor.setName("AMD 9800X3D");
         processor.setPrice(449.99);
         processor.setInv(20);
+        processor.setMaxInv(20);
+        processor.setMinInv(1);
 
 
         InhousePart motherboard = new InhousePart();
@@ -103,6 +107,8 @@ public class BootStrapData implements CommandLineRunner {
         motherboard.setName("Motherboard");
         motherboard.setPrice(249.99);
         motherboard.setInv(20);
+        motherboard.setMaxInv(20);
+        motherboard.setMinInv(1);
 
 
         InhousePart tower = new InhousePart();
@@ -110,6 +116,8 @@ public class BootStrapData implements CommandLineRunner {
         tower.setName("Case");
         tower.setPrice(49.99);
         tower.setInv(20);
+        tower.setMaxInv(20);
+        tower.setMinInv(1);
 
 
         InhousePart ram = new InhousePart();
@@ -117,6 +125,8 @@ public class BootStrapData implements CommandLineRunner {
         ram.setName("DDR5 64GB");
         ram.setPrice(199.99);
         ram.setInv(20);
+        ram.setMaxInv(20);
+        ram.setMinInv(1);
 
         // Add seed parts to database.
         seedParts.add(gpu);
