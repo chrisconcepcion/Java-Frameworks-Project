@@ -19,7 +19,12 @@
 <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Price Error</p>
 
 <p>Inventory: <input type="text" path="inv" th:field="*{inv}" placeholder="Inventory" class="form-control mb-4 col-4"/></p>
-    <p th:if="${#fields.hasErrors('inv')}" th:errors="*{inv}">Inventory Error</p>
+    <div th:if="${#fields.hasErrors()}">
+        <ul>
+            <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="error"/>
+        </ul>
+    </div>
+
     <p>Max Inventory: <input type="text" th:field="*{maxInv}" placeholder="Max Inventory" class="form-control mb-4 col-4"/></p>
     <p>Min Inventory: <input type="text" th:field="*{minInv}" placeholder="Min Inventory" class="form-control mb-4 col-4"/></p>
     <p>Part ID:<input type="text" th:field="*{partId}" placeholder="Part ID" class="form-control mb-4 col-4"/></p>
