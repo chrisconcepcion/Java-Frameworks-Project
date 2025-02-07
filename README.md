@@ -238,6 +238,32 @@ F.  Add a “Buy Now” button to your product list. Your “Buy Now” button m
 •  The button should decrement the inventory of that product by one. It should not affect the inventory of any of the associated parts.
 •  Display a message that indicates the success or failure of a purchase.
 
+Added purchase failure template src/main/resources/templates/purchase_failure.html
+
+Added purchase success template src/main/resources/templates/purchase_success.html
+
+Changes to src/main/java/com/example/demo/controllers/AddProductController.java:
+    line 199: Added mapping and controller method
+        // Decrement the inventory of that product by one.
+        @GetMapping("/decrementProduct")
+        public String decrementProduct(@RequestParam("productID") int theId, Model theModel) {
+                ProductService repo = context.getBean(ProductServiceImpl.class);
+                Product product3 = repo.findById(theId);
+                int inv = product3.getInv();
+                if (inv > 0) {
+                    product3.setInv(inv - 1);
+                repo.save(product3);
+                return "purchase_success";
+            } else {
+                return "purchase_failure";
+            }
+        }
+            
+
+Changes to src/main/resources/templates/mainscreen.html:
+    line 100: added buy button
+        <td><a th:href="@{/decrementProduct(productID=${tempProduct.id})}" class="btn btn-primary btn-sm mb-3">Buy Now</a>
+
 
 G.  Modify the parts to track maximum and minimum inventory by doing the following:
 •  Add additional fields to the part entity for maximum and minimum inventory.

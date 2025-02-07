@@ -195,4 +195,19 @@ public class AddProductController {
         theModel.addAttribute("availparts",availParts);
         return "productForm";
     }
+
+    // Decrement the inventory of that product by one.
+    @GetMapping("/decrementProduct")
+    public String decrementProduct(@RequestParam("productID") int theId, Model theModel) {
+        ProductService repo = context.getBean(ProductServiceImpl.class);
+        Product product3 = repo.findById(theId);
+        int inv = product3.getInv();
+        if (inv > 0) {
+            product3.setInv(inv - 1);
+            repo.save(product3);
+            return "purchase_success";
+        } else {
+            return "purchase_failure";
+        }
+    }
 }
