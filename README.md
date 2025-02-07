@@ -477,7 +477,7 @@ Added validators to src/main/java/com/example/demo/domain/Part.java:
 
 
 I.  Add at least two unit tests for the maximum and minimum fields to the PartTest class in the test package.
-
+    Added tests to src/test/java/com/example/demo/domain/PartTest.java at lines 160-195.
 
 J.  Remove the class files for any unused validators in order to clean your code.
 
