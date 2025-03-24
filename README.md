@@ -482,4 +482,4 @@ I.  Add at least two unit tests for the maximum and minimum fields to the PartTe
 J.  Remove the class files for any unused validators in order to clean your code.
     Deleted DeletePartValidator
 
-K.  Demonstrate professional communication in the content and presentation of your submission.
+K.  Demonstrate professional communication in the content and presentation of your submission.# Java-Frameworks-Project
